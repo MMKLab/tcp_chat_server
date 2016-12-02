@@ -39,7 +39,9 @@ public class ChatServer {
 			e.printStackTrace();
 		}
 	}
-
+	/*
+	 * method for notifying clients about a new member
+	 */
 	public synchronized static void notifyAllClientsAboutANewMember(ServerClientThread newClient){
 		for (ServerClientThread client : listOfClients) {
 			if(newClient == client)
@@ -47,21 +49,28 @@ public class ChatServer {
 			client.sendStringToClient("*** NEW USER: "+newClient.clientUsername+" has entered the chat room!!!***");
 		}
 	}
-	public synchronized static void forwardMessageToAll(String message){
+	/*
+	 * method for passing message to all clients
+	 */
+	public synchronized static void forwardMessageToAll(String message, ServerClientThread clientSender){
 		for (ServerClientThread client : listOfClients) {
-			client.sendStringToClient(message);
+			client.sendStringToClient("<"+clientSender.clientUsername+"> "+message);
 		}
 	}
-	public synchronized static void notifyAllClientsAboutALeavingMember(ServerClientThread newClient){
+	/*
+	 * method for notifying clients about a leaving member
+	 */
+	public synchronized static void notifyAllClientsAboutALeavingMember(ServerClientThread leavingClient){
 		for (ServerClientThread client : listOfClients) {
-			if(newClient == client)
+			if(leavingClient == client)
 				continue;
-			client.sendStringToClient("*** USER: "+newClient.clientUsername+" has left the chat room!!!***");
+			client.sendStringToClient("*** USER: "+leavingClient.clientUsername+" has left the chat room!!!***");
 		}
 	}
+	/*
+	 * method for removing passed client as parameter 
+	 */
 	public synchronized static void removeFromClientsList(ServerClientThread client){
 		listOfClients.remove(client);
 	}
-
-	//maybe need volatile and synchronized
 }

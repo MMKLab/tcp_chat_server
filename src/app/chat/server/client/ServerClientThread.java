@@ -34,26 +34,26 @@ public class ServerClientThread extends Thread{
 			inputFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));//init inputStream
 			outputToClient = new PrintStream(clientSocket.getOutputStream());//init outputStream
 			
-			outputToClient.println("Enter username: +\n");
+			outputToClient.println("Enter username: \n"); //notifying client to send server his user name
 			clientUsername = inputFromClient.readLine();//setting username
 			
 			outputToClient.println("Welcome "+clientUsername+". \nIf you want to exit, you can also type /quit");
-			ChatServer.notifyAllClientsAboutANewMember(this);
+			ChatServer.notifyAllClientsAboutANewMember(this); //method from ChatServer(look there for explanation)
 			
-			while(true){
+			while(true){ //endless loop until client notifies us he wants to quit
 				String text = inputFromClient.readLine();//reading line from client in loop
 				if(text.startsWith("/quit")){
-					ChatServer.notifyAllClientsAboutANewMember(this);
+					ChatServer.notifyAllClientsAboutALeavingMember(this);; //method from ChatServer(look there for explanation)
 					break;
 				}
-				ChatServer.forwardMessageToAll(text);
+				ChatServer.forwardMessageToAll(text, this); //method from ChatServer(look there for explanation)
 			}
-			outputToClient.println("Goodbye Mr."+clientUsername);
-			clientSocket.close();
+			outputToClient.println("Goodbye Mr."+clientUsername); //acknowledgement for the leaving client
+			clientSocket.close(); //closing socket with client
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		ChatServer.removeFromClientsList(this);
+		ChatServer.removeFromClientsList(this); //method from ChatServer(look there for explanation)
 	}
 	
 	

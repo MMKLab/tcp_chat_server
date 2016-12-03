@@ -44,8 +44,11 @@ public class ChatServer {
 	 */
 	public synchronized static void notifyAllClientsAboutANewMember(ServerClientThread newClient){
 		for (ServerClientThread client : listOfClients) {
-			if(newClient == client)
+			if(newClient == client){
+				//sending welcome string to client that just entered the chat group
+				client.sendStringToClient("Welcome "+client.clientUsername+". \nIf you want to exit, you can also type /quit");
 				continue;
+			}
 			client.sendStringToClient("*** NEW USER: "+newClient.clientUsername+" has entered the chat room!!!***");
 		}
 	}
@@ -62,15 +65,18 @@ public class ChatServer {
 	 */
 	public synchronized static void notifyAllClientsAboutALeavingMember(ServerClientThread leavingClient){
 		for (ServerClientThread client : listOfClients) {
-			if(leavingClient == client)
+			if(leavingClient == client){
+				client.sendStringToClient("Goodbye Mr."+client.clientUsername);  //acknowledgement for the leaving client
 				continue;
+			}
 			client.sendStringToClient("*** USER: "+leavingClient.clientUsername+" has left the chat room!!!***");
 		}
+		ChatServer.removeFromClientsList(leavingClient); //method from ChatServer(look there for explanation)
 	}
 	/*
-	 * method for removing passed client as parameter 
+	 * method for removing passed client as parameter from clients list
 	 */
 	public synchronized static void removeFromClientsList(ServerClientThread client){
-		listOfClients.remove(client);
+		listOfClients.remove(client); 
 	}
 }

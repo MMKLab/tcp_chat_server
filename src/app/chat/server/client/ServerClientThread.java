@@ -15,10 +15,12 @@ public class ServerClientThread extends Thread{
 	public String clientUsername = null; /*
 										 * we made this public just to ease
 										 * things up so we don't need to pass
-										 * string as parm too if we have
-										 * this object already as parm
+										 * string as parm too if we have this
+										 * object already as parm, better
+										 * alternative to this is to create
+										 * getter
 										 */
-	
+
 	public ServerClientThread(Socket clientSocket) {
 		this.clientSocket = clientSocket;
 	}
@@ -37,7 +39,6 @@ public class ServerClientThread extends Thread{
 			outputToClient.println("Enter username: \n"); //notifying client to send server his user name
 			clientUsername = inputFromClient.readLine();//setting username
 			
-			outputToClient.println("Welcome "+clientUsername+". \nIf you want to exit, you can also type /quit");
 			ChatServer.notifyAllClientsAboutANewMember(this); //method from ChatServer(look there for explanation)
 			
 			while(true){ //endless loop until client notifies us he wants to quit
@@ -48,12 +49,10 @@ public class ServerClientThread extends Thread{
 				}
 				ChatServer.forwardMessageToAll(text, this); //method from ChatServer(look there for explanation)
 			}
-			outputToClient.println("Goodbye Mr."+clientUsername); //acknowledgement for the leaving client
 			clientSocket.close(); //closing socket with client
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		ChatServer.removeFromClientsList(this); //method from ChatServer(look there for explanation)
 	}
 	
 	
